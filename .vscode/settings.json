@@ -3,7 +3,8 @@
         "math.h": "c",
         "stdio.h": "c",
         "forca.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "stdlib.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
