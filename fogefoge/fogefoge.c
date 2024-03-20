@@ -1,56 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fogefoge.h"
+#include "mapa.h"
 
-//matriz
-char** mapa;
-int linhas;
-int colunas;
+//mapa
+MAPA m;
+POSICAO heroi;
 
-void liberamapa() {
-    for(int i = 0; i < linhas; i++) {
-        free(mapa[i]);
-    }
-    free(mapa);    
+int acabou() {
+    return 0;
 }
 
-void alocamapa() {
-    mapa = malloc(sizeof(char*) * linhas);
-    for(int i = 0; i < linhas; i++) {
-        mapa[i] = malloc(sizeof(char) * (colunas+1)); 
+void move(char direcao) {
+    // remove o personagem da posicao anterior
+    m.matrizmapa[heroi.x][heroi.y] = '.';
+
+    // faz o heroi andar e atualiza a posicao dele com base na inicial 
+    switch(direcao) {
+        case 'a':
+            m.matrizmapa[heroi.x][heroi.y-1] = '@';
+            heroi.y--;
+            break;
+        case 'w':
+            m.matrizmapa[heroi.x-1][heroi.y] = '@';
+            heroi.x--;
+            break;
+        case 's':
+            m.matrizmapa[heroi.x+1][heroi.y] = '@';
+            heroi.x++;
+            break;
+        case 'd':
+            m.matrizmapa[heroi.x][heroi.y+1] = '@';
+            heroi.y++;
+            break;
     }
-}
-
-void lemapa() {
-
-    FILE* f;
-
-    f = fopen("mapa.txt", "r");
-    if (f == 0) {
-        printf("Erro na leitura do mapa\n");
-        exit(1);
-    }
-
-    fscanf(f, "%d %d", &linhas, &colunas);
-
-    // Alocação Dinâmica
-    alocamapa();
-    // Fim alocação dinâmica
-
-    for(int i = 0; i < 5; i++) {
-        fscanf(f, "%s", mapa[i]);
-    }
-    fclose(f);
 
 }
 
 int main () {
 
-    lemapa();
+    lemapa(&m);
+    encontramapa(&m, &heroi, '@');
 
-    for(int i = 0; i < 5; i++) {
-        printf("%s\n", mapa[i]);
-    }
+    do {
+        imprimirmapa(&m);
 
-    liberamapa();
+        char comando;
+        scanf(" %c", &comando);
+        move(comando);
+
+    } while (!acabou());
+
+    liberamapa(&m);
 }
